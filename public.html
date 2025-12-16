@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStart Solutions - Request Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .top-nav {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.3em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            font-size: 0.95em;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-links a.active {
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        /* Adjust body to account for fixed nav */
+        body {
+            padding-top: 80px;
+        }
+
+        /* Mobile responsive nav */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 15px 20px;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                font-size: 0.9em;
+            }
+
+            body {
+                padding-top: 120px;
+            }
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 650px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px 40px 30px;
+            text-align: center;
+        }
+
+        .company-logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .company-tagline {
+            font-size: 1.05em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-intro {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-intro h2 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-intro p {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .required-asterisk {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: #ffffff;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(30, 60, 114, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: none;
+            animation: slideDown 0.4s ease;
+            font-weight: 500;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 24px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .info-box h3 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+            font-weight: 600;
+        }
+
+        .info-box p {
+            color: #495057;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 12px;
+        }
+
+        .info-list li {
+            padding-left: 24px;
+            position: relative;
+            margin-bottom: 8px;
+            color: #495057;
+            font-size: 0.95em;
+        }
+
+        .info-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 30px 25px;
+            }
+
+            .header-banner {
+                padding: 30px 25px 25px;
+            }
+
+            .company-logo {
+                font-size: 1.5em;
+            }
+
+            .form-intro h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-content">
+            <div class="nav-brand">TechStart CRM</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Overview</a>
+                <a href="staff.html">Pipeline</a>
+                <a href="insights.html">Insights</a>
+                <a href="public.html" class="active">Public Form</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="header-banner">
+            <div class="company-logo">TechStart Solutions</div>
+            <div class="company-tagline">Enterprise Project Management Platform</div>
+        </div>
+
+        <div class="form-container">
+            <div class="form-intro">
+                <h2>Request a Demo</h2>
+                <p>Discover how TechStart can transform your project management workflow</p>
+            </div>
+
+            <div id="messageBox" class="message"></div>
+
+            <form id="leadForm">
+                <div class="form-group">
+                    <label for="companyName">
+                        Company Name
+                        <span class="required-asterisk">*</span>
+                    </label>
+                    <input type="text" id="companyName" required placeholder="Enter your company name">
+                </div>
+
+                <div class="form-group">
+                    <label for="contactName">
+                        Contact Person
+                        <span class="required-asterisk">*</span>
+                    </label>
+                    <input type="text" id="contactName" required placeholder="Full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        Business Email
+                        <span class="required-asterisk">*</span>
+                    </label>
+                    <input type="email" id="email" required placeholder="you@company.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">
+                        Phone Number
+                        <span class="required-asterisk">*</span>
+                    </label>
+                    <input type="tel" id="phone" required placeholder="+44 20 1234 5678">
+                </div>
+
+                <div class="form-group">
+                    <label for="companySize">
+                        Company Size
+                        <span class="required-asterisk">*</span>
+                    </label>
+                    <select id="companySize" required>
+                        <option value="">Select company size</option>
+                        <option value="1-10">1-10 employees</option>
+                        <option value="11-50">11-50 employees</option>
+                        <option value="51-200">51-200 employees</option>
+                        <option value="201-500">201-500 employees</option>
+                        <option value="500+">500+ employees</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="estimatedValue">
+                        Estimated Budget (Annual)
+                        <span class="required-asterisk">*</span>
+                    </label>
+                    <select id="estimatedValue" required>
+                        <option value="">Select budget range</option>
+                        <option value="5000">£5,000 - £10,000</option>
+                        <option value="15000">£10,000 - £25,000</option>
+                        <option value="35000">£25,000 - £50,000</option>
+                        <option value="75000">£50,000 - £100,000</option>
+                        <option value="150000">£100,000+</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Project Requirements</label>
+                    <textarea id="message" placeholder="Tell us about your project management challenges and goals..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Submit Demo Request
+                </button>
+            </form>
+
+            <div class="info-box">
+                <h3>What Happens Next?</h3>
+                <ul class="info-list">
+                    <li>Our sales team reviews your requirements</li>
+                    <li>We'll contact you within 24 hours</li>
+                    <li>Schedule a personalized demo session</li>
+                    <li>Receive custom pricing proposal</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpVvE4dAutHNfhEE2lfeK6sq5Wyd32Om0",
+            authDomain: "techstart-crm.firebaseapp.com",
+            projectId: "techstart-crm",
+            storageBucket: "techstart-crm.firebasestorage.app",
+            messagingSenderId: "963810827462",
+            appId: "1:963810827462:web:94cc354a3ed88fac518bc7",
+            measurementId: "G-28BN9R4CB6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const form = document.getElementById('leadForm');
+        const messageBox = document.getElementById('messageBox');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = `message ${type}`;
+            messageBox.style.display = 'block';
+            
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 6000);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting Request...';
+
+            try {
+                const leadData = {
+                    companyName: document.getElementById('companyName').value.trim(),
+                    contactName: document.getElementById('contactName').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    companySize: document.getElementById('companySize').value,
+                    estimatedValue: parseInt(document.getElementById('estimatedValue').value),
+                    message: document.getElementById('message').value.trim(),
+                    stage: 'New',
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp(),
+                    notes: []
+                };
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(leadData.email)) {
+                    throw new Error('Please enter a valid email address');
+                }
+
+                const docRef = await addDoc(collection(db, 'leads'), leadData);
+                
+                console.log('Lead created with ID:', docRef.id);
+                
+                showMessage('Thank you! Your demo request has been submitted successfully. Our team will contact you within 24 hours.', 'success');
+                
+                form.reset();
+
+            } catch (error) {
+                console.error('Error submitting lead:', error);
+                showMessage('Error: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Demo Request';
+            }
+        });
+    </script>
+</body>
+</html>

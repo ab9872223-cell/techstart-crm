@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights Dashboard - TechStart CRM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .top-nav {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .page-header {
+            margin-bottom: 35px;
+        }
+
+        .page-header h1 {
+            color: #1e3c72;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.05em;
+        }
+
+        .refresh-time {
+            text-align: right;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+
+        .metric-change {
+            margin-top: 12px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            font-size: 0.88em;
+            font-weight: 600;
+        }
+
+        .metric-change.positive {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        .metric-change.neutral {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 35px;
+        }
+
+        .chart-header {
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .chart-header h2 {
+            color: #2c3e50;
+            font-size: 1.6em;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .chart-header p {
+            color: #666;
+            font-size: 0.98em;
+        }
+
+        .stage-distribution {
+            display: grid;
+            gap: 18px;
+        }
+
+        .stage-bar {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .stage-bar:hover {
+            transform: translateX(6px);
+            background: #f1f3f5;
+        }
+
+        .stage-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stage-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.08em;
+        }
+
+        .stage-count {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .count-badge {
+            background: #2a5298;
+            color: white;
+            padding: 5px 14px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.92em;
+        }
+
+        .percentage {
+            color: #666;
+            font-size: 0.98em;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 5px;
+            transition: width 0.6s ease;
+        }
+
+        .value-tier {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            border: 2px solid #e1e8ed;
+            transition: all 0.3s ease;
+            margin-bottom: 14px;
+        }
+
+        .value-tier:hover {
+            border-color: #2a5298;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tier-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.05em;
+        }
+
+        .tier-value {
+            color: #1e3c72;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .tier-count {
+            color: #666;
+            font-size: 0.92em;
+        }
+
+        .recent-activity {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .activity-item {
+            padding: 16px;
+            border-left: 4px solid #2a5298;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .activity-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .activity-time {
+            color: #999;
+            font-size: 0.85em;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .activity-text {
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #2a5298;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
+            }
+
+            .top-nav {
+                padding: 15px 20px;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 1.8em;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-content">
+            <div class="nav-brand">TechStart CRM</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Overview</a>
+                <a href="staff.html">Pipeline</a>
+                <a href="insights.html">Insights</a>
+                <a href="public.html">Public Form</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-container">
+        <div class="page-header">
+            <h1>Pipeline Insights & Analytics</h1>
+            <p>Real-time performance metrics and operational visibility</p>
+        </div>
+
+        <div class="refresh-time">
+            Last updated: <span id="lastUpdate">Loading...</span>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total Pipeline Value</div>
+                <div class="metric-value">£<span id="totalPipelineValue">0</span></div>
+                <div class="metric-change neutral">Active Leads Only</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">Conversion Rate</div>
+                <div class="metric-value"><span id="conversionRate">0</span>%</div>
+                <div class="metric-change positive">Won / Total Leads</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">New Leads (24h)</div>
+                <div class="metric-value"><span id="last24Hours">0</span></div>
+                <div class="metric-change neutral">Last 24 Hours</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">Average Deal Size</div>
+                <div class="metric-value">£<span id="avgDealValue">0</span></div>
+                <div class="metric-change positive">All Leads</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2>Pipeline Stage Distribution</h2>
+                <p>Visual breakdown of leads across all stages</p>
+            </div>
+            <div class="stage-distribution" id="stageDistribution">
+                <div class="loading">Loading distribution data...</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>Deal Value Tiers</h2>
+                    <p>Leads grouped by estimated deal size</p>
+                </div>
+                <div id="valueTiers">
+                    <div class="loading">Loading value data...</div>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <div class="chart-header">
+                    <h2>Recent Pipeline Activity</h2>
+                    <p>Latest lead submissions and updates</p>
+                </div>
+                <div id="recentActivity">
+                    <div class="loading">Loading activity...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, collection, query, onSnapshot, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpVvE4dAutHNfhEE2lfeK6sq5Wyd32Om0",
+            authDomain: "techstart-crm.firebaseapp.com",
+            projectId: "techstart-crm",
+            storageBucket: "techstart-crm.firebasestorage.app",
+            messagingSenderId: "963810827462",
+            appId: "1:963810827462:web:94cc354a3ed88fac518bc7",
+            measurementId: "G-28BN9R4CB6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let allLeads = [];
+
+        const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
+        
+        onSnapshot(q, (snapshot) => {
+            allLeads = [];
+            snapshot.forEach((doc) => {
+                allLeads.push({ id: doc.id, ...doc.data() });
+            });
+            
+            updateAllInsights();
+            updateLastRefresh();
+        }, (error) => {
+            console.error('Error loading insights:', error);
+        });
+
+        function updateLastRefresh() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+
+        function updateAllInsights() {
+            updateKeyMetrics();
+            updateStageDistribution();
+            updateValueTiers();
+            updateRecentActivity();
+        }
+
+        function updateKeyMetrics() {
+            const activeLeads = allLeads.filter(l => l.stage !== 'Lost' && l.stage !== 'Won');
+            const totalPipelineValue = activeLeads.reduce((sum, lead) => sum + (lead.estimatedValue || 0), 0);
+            
+            const wonLeads = allLeads.filter(l => l.stage === 'Won').length;
+            const conversionRate = allLeads.length > 0 ? ((wonLeads / allLeads.length) * 100).toFixed(1) : 0;
+            
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const last24Hours = allLeads.filter(l => {
+                if (!l.createdAt) return false;
+                return l.createdAt.toDate() > yesterday;
+            }).length;
+
+            const avgDealValue = allLeads.length > 0 
+                ? (allLeads.reduce((sum, l) => sum + (l.estimatedValue || 0), 0) / allLeads.length).toFixed(0)
+                : 0;
+
+            document.getElementById('totalPipelineValue').textContent = totalPipelineValue.toLocaleString();
+            document.getElementById('conversionRate').textContent = conversionRate;
+            document.getElementById('last24Hours').textContent = last24Hours;
+            document.getElementById('avgDealValue').textContent = parseInt(avgDealValue).toLocaleString();
+        }
+
+        function updateStageDistribution() {
+            const stages = ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
+            const stageCounts = {};
+            
+            stages.forEach(stage => {
+                stageCounts[stage] = allLeads.filter(l => l.stage === stage).length;
+            });
+
+            const total = allLeads.length || 1;
+
+            const container = document.getElementById('stageDistribution');
+            container.innerHTML = stages.map(stage => {
+                const count = stageCounts[stage];
+                const percentage = ((count / total) * 100).toFixed(1);
+                
+                return `
+                    <div class="stage-bar">
+                        <div class="stage-bar-header">
+                            <span class="stage-name">${stage}</span>
+                            <div class="stage-count">
+                                <span class="count-badge">${count}</span>
+                                <span class="percentage">${percentage}%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateValueTiers() {
+            const tiers = [
+                { name: '£5k - £10k', min: 5000, max: 10000 },
+                { name: '£10k - £25k', min: 10000, max: 25000 },
+                { name: '£25k - £50k', min: 25000, max: 50000 },
+                { name: '£50k - £100k', min: 50000, max: 100000 },
+                { name: '£100k+', min: 100000, max: Infinity }
+            ];
+
+            const container = document.getElementById('valueTiers');
+            container.innerHTML = tiers.map(tier => {
+                const leadsInTier = allLeads.filter(l => 
+                    l.estimatedValue >= tier.min && l.estimatedValue < tier.max
+                );
+                const totalValue = leadsInTier.reduce((sum, l) => sum + (l.estimatedValue || 0), 0);
+
+                return `
+                    <div class="value-tier">
+                        <div class="tier-header">
+                            <span class="tier-name">${tier.name}</span>
+                            <span class="tier-value">£${totalValue.toLocaleString()}</span>
+                        </div>
+                        <div class="tier-count">${leadsInTier.length} leads in this tier</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateRecentActivity() {
+            const recentLeads = allLeads.slice(0, 5);
+            const container = document.getElementById('recentActivity');
+
+            if (recentLeads.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No recent activity</p>';
+                return;
+            }
+
+            container.innerHTML = recentLeads.map(lead => {
+                const timeAgo = lead.createdAt ? getTimeAgo(lead.createdAt.toDate()) : 'Just now';
+                
+                return `
+                    <div class="activity-item">
+                        <div class="activity-time">${timeAgo}</div>
+                        <div class="activity-text">
+                            <strong>${lead.companyName}</strong> submitted a new lead 
+                            (£${(lead.estimatedValue || 0).toLocaleString()}) - 
+                            Current stage: <strong>${lead.stage}</strong>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            return `${Math.floor(seconds / 86400)} days ago`;
+        }
+
+        setInterval(updateLastRefresh, 30000);
+    </script>
+</body>
+</html>

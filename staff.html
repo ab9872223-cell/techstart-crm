@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - TechStart CRM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .top-nav {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .page-header {
+            margin-bottom: 35px;
+        }
+
+        .page-header h1 {
+            color: #1e3c72;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.05em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 4px solid #2a5298;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filters-section label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+
+        .filters-section select {
+            padding: 11px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .filters-section select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .leads-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        .leads-header {
+            background: #f8f9fa;
+            padding: 24px 28px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        .leads-header h2 {
+            color: #2c3e50;
+            font-size: 1.6em;
+            font-weight: 700;
+        }
+
+        .lead-card {
+            padding: 28px;
+            border-bottom: 1px solid #e1e8ed;
+            transition: background 0.2s ease;
+        }
+
+        .lead-card:hover {
+            background: #f8f9fa;
+        }
+
+        .lead-card:last-child {
+            border-bottom: none;
+        }
+
+        .lead-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .lead-title {
+            flex: 1;
+        }
+
+        .lead-title h3 {
+            color: #2c3e50;
+            font-size: 1.35em;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .lead-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .stage-badge {
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.88em;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .stage-new { background: #e3f2fd; color: #1565c0; }
+        .stage-contacted { background: #fff3e0; color: #e65100; }
+        .stage-qualified { background: #f3e5f5; color: #6a1b9a; }
+        .stage-proposal { background: #e8f5e9; color: #2e7d32; }
+        .stage-won { background: #c8e6c9; color: #1b5e20; }
+        .stage-lost { background: #ffcdd2; color: #b71c1c; }
+
+        .lead-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 18px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.82em;
+            color: #666;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.02em;
+        }
+
+        .lead-message {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            border-left: 4px solid #2a5298;
+            margin-bottom: 18px;
+            color: #495057;
+            line-height: 1.7;
+        }
+
+        .lead-message strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .lead-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .lead-actions select {
+            flex: 1;
+            min-width: 170px;
+            padding: 11px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 0.98em;
+            cursor: pointer;
+            background: white;
+        }
+
+        .btn {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.98em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(30, 60, 114, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .notes-section {
+            margin-top: 18px;
+            padding: 18px;
+            background: #fffbf0;
+            border-radius: 8px;
+            border: 1px solid #ffd966;
+        }
+
+        .notes-section h4 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+            font-weight: 600;
+        }
+
+        .note-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #ffc107;
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .note-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 70px 30px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 1em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #2a5298;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .timestamp {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
+            }
+
+            .top-nav {
+                padding: 15px 20px;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 1.8em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lead-header-row {
+                flex-direction: column;
+            }
+
+            .lead-actions {
+                flex-direction: column;
+            }
+
+            .lead-actions select,
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-content">
+            <div class="nav-brand">TechStart CRM</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Overview</a>
+                <a href="staff.html">Pipeline</a>
+                <a href="insights.html">Insights</a>
+                <a href="public.html">Public Form</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1>Sales Pipeline Dashboard</h1>
+            <p>Manage and track your leads in real-time</p>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalLeads">0</div>
+                <div class="stat-label">Total Leads</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="newLeads">0</div>
+                <div class="stat-label">New Leads</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="wonLeads">0</div>
+                <div class="stat-label">Won Deals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">£<span id="pipelineValue">0</span></div>
+                <div class="stat-label">Pipeline Value</div>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <label for="stageFilter">Filter by Stage:</label>
+            <select id="stageFilter">
+                <option value="all">All Stages</option>
+                <option value="New">New</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Qualified">Qualified</option>
+                <option value="Proposal">Proposal</option>
+                <option value="Won">Won</option>
+                <option value="Lost">Lost</option>
+            </select>
+        </div>
+
+        <div class="leads-container">
+            <div class="leads-header">
+                <h2>Lead Pipeline</h2>
+            </div>
+            <div id="leadsContainer">
+                <div class="loading">Loading leads...</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, collection, query, onSnapshot, updateDoc, doc, arrayUnion, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpVvE4dAutHNfhEE2lfeK6sq5Wyd32Om0",
+            authDomain: "techstart-crm.firebaseapp.com",
+            projectId: "techstart-crm",
+            storageBucket: "techstart-crm.firebasestorage.app",
+            messagingSenderId: "963810827462",
+            appId: "1:963810827462:web:94cc354a3ed88fac518bc7",
+            measurementId: "G-28BN9R4CB6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let allLeads = [];
+        let currentFilter = 'all';
+
+        const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
+        
+        onSnapshot(q, (snapshot) => {
+            allLeads = [];
+            snapshot.forEach((doc) => {
+                allLeads.push({ id: doc.id, ...doc.data() });
+            });
+            
+            updateStats();
+            renderLeads();
+        }, (error) => {
+            console.error('Error loading leads:', error);
+            document.getElementById('leadsContainer').innerHTML = 
+                '<div class="empty-state"><h3>Error Loading Leads</h3><p>Please refresh the page.</p></div>';
+        });
+
+        function updateStats() {
+            const total = allLeads.length;
+            const newCount = allLeads.filter(l => l.stage === 'New').length;
+            const wonCount = allLeads.filter(l => l.stage === 'Won').length;
+            const pipelineValue = allLeads
+                .filter(l => l.stage !== 'Lost' && l.stage !== 'Won')
+                .reduce((sum, lead) => sum + (lead.estimatedValue || 0), 0);
+
+            document.getElementById('totalLeads').textContent = total;
+            document.getElementById('newLeads').textContent = newCount;
+            document.getElementById('wonLeads').textContent = wonCount;
+            document.getElementById('pipelineValue').textContent = pipelineValue.toLocaleString();
+        }
+
+        function renderLeads() {
+            const container = document.getElementById('leadsContainer');
+            
+            const filteredLeads = currentFilter === 'all' 
+                ? allLeads 
+                : allLeads.filter(l => l.stage === currentFilter);
+
+            if (filteredLeads.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Leads Found</h3>
+                        <p>Leads will appear here when they are submitted through the public form.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredLeads.map(lead => `
+                <div class="lead-card">
+                    <div class="lead-header-row">
+                        <div class="lead-title">
+                            <h3>${lead.companyName}</h3>
+                            <p>${lead.contactName} &bull; ${lead.email}</p>
+                            <div class="timestamp">
+                                Created: ${lead.createdAt ? new Date(lead.createdAt.toDate()).toLocaleString() : 'Just now'}
+                            </div>
+                        </div>
+                        <span class="stage-badge stage-${lead.stage.toLowerCase()}">${lead.stage}</span>
+                    </div>
+
+                    <div class="lead-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value">${lead.phone}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Company Size</span>
+                            <span class="detail-value">${lead.companySize}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Estimated Value</span>
+                            <span class="detail-value">£${(lead.estimatedValue || 0).toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    ${lead.message ? `
+                        <div class="lead-message">
+                            <strong>Project Requirements:</strong>
+                            ${lead.message}
+                        </div>
+                    ` : ''}
+
+                    <div class="lead-actions">
+                        <select id="stage-${lead.id}" onchange="updateStage('${lead.id}', this.value)">
+                            <option value="">Update Stage...</option>
+                            <option value="New" ${lead.stage === 'New' ? 'selected' : ''}>New</option>
+                            <option value="Contacted" ${lead.stage === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                            <option value="Qualified" ${lead.stage === 'Qualified' ? 'selected' : ''}>Qualified</option>
+                            <option value="Proposal" ${lead.stage === 'Proposal' ? 'selected' : ''}>Proposal</option>
+                            <option value="Won" ${lead.stage === 'Won' ? 'selected' : ''}>Won</option>
+                            <option value="Lost" ${lead.stage === 'Lost' ? 'selected' : ''}>Lost</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="toggleNotes('${lead.id}')">
+                            Add Internal Note
+                        </button>
+                    </div>
+
+                    ${lead.notes && lead.notes.length > 0 ? `
+                        <div class="notes-section">
+                            <h4>Internal Notes</h4>
+                            ${lead.notes.map(note => `
+                                <div class="note-item">${note}</div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div id="note-input-${lead.id}" style="display: none;">
+                        <textarea class="note-input" id="note-text-${lead.id}" 
+                            placeholder="Add internal note for team reference..."></textarea>
+                        <button class="btn btn-primary" style="margin-top: 12px;" 
+                            onclick="saveNote('${lead.id}')">Save Note</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.updateStage = async (leadId, newStage) => {
+            if (!newStage) return;
+
+            try {
+                const leadRef = doc(db, 'leads', leadId);
+                await updateDoc(leadRef, {
+                    stage: newStage,
+                    updatedAt: new Date()
+                });
+                console.log('Stage updated successfully');
+            } catch (error) {
+                console.error('Error updating stage:', error);
+                alert('Error updating stage: ' + error.message);
+            }
+        };
+
+        window.toggleNotes = (leadId) => {
+            const noteInput = document.getElementById(`note-input-${leadId}`);
+            noteInput.style.display = noteInput.style.display === 'none' ? 'block' : 'none';
+        };
+
+        window.saveNote = async (leadId) => {
+            const noteText = document.getElementById(`note-text-${leadId}`).value.trim();
+            
+            if (!noteText) {
+                alert('Please enter a note');
+                return;
+            }
+
+            try {
+                const leadRef = doc(db, 'leads', leadId);
+                const timestamp = new Date().toLocaleString();
+                await updateDoc(leadRef, {
+                    notes: arrayUnion(`[${timestamp}] ${noteText}`),
+                    updatedAt: new Date()
+                });
+                
+                document.getElementById(`note-text-${leadId}`).value = '';
+                document.getElementById(`note-input-${leadId}`).style.display = 'none';
+                
+                console.log('Note added successfully');
+            } catch (error) {
+                console.error('Error adding note:', error);
+                alert('Error adding note: ' + error.message);
+            }
+        };
+
+        document.getElementById('stageFilter').addEventListener('change', (e) => {
+            currentFilter = e.target.value;
+            renderLeads();
+        });
+    </script>
+</body>
+</html>

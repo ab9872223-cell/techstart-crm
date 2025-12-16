@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Dashboard - TechStart CRM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .top-nav {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .page-header {
+            margin-bottom: 35px;
+        }
+
+        .page-header h1 {
+            color: #1e3c72;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.05em;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-top: 4px solid #2a5298;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .kpi-label {
+            color: #666;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+
+        .kpi-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .kpi-value {
+            font-size: 3em;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: #2e7d32;
+        }
+
+        .trend-down {
+            color: #c62828;
+        }
+
+        .trend-neutral {
+            color: #1565c0;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .chart-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .chart-header h2 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .chart-header p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .funnel-stage {
+            margin-bottom: 20px;
+        }
+
+        .funnel-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .funnel-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .funnel-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+        }
+
+        .funnel-count {
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        .funnel-bar {
+            height: 40px;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .funnel-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            align-items: center;
+            padding-left: 15px;
+            color: white;
+            font-weight: 600;
+            transition: width 0.6s ease;
+        }
+
+        .quick-actions {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(30, 60, 114, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: #2a5298;
+            border: 2px solid #2a5298;
+        }
+
+        .action-btn.secondary:hover {
+            background: #f8f9fa;
+        }
+
+        .top-leads {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .lead-item {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .lead-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .lead-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .lead-info {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .lead-value {
+            color: #2a5298;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-top: 6px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #2a5298;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
+            }
+
+            .top-nav {
+                padding: 15px 20px;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-content">
+            <div class="nav-brand">TechStart CRM</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Overview</a>
+                <a href="staff.html">Pipeline</a>
+                <a href="insights.html">Insights</a>
+                <a href="public.html">Public Form</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1>Executive Dashboard</h1>
+            <p>Real-time sales performance overview</p>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Total Pipeline</div>
+                        <div class="kpi-value">£<span id="totalValue">0</span></div>
+                        <div class="kpi-trend trend-up" id="valueTrend">
+                            <span>↑ 12%</span> vs last month
+                        </div>
+                    </div>
+                    <div class="kpi-icon">💰</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Active Leads</div>
+                        <div class="kpi-value" id="activeLeads">0</div>
+                        <div class="kpi-trend trend-up" id="activeTrend">
+                            <span>↑ 8</span> this week
+                        </div>
+                    </div>
+                    <div class="kpi-icon">📊</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Win Rate</div>
+                        <div class="kpi-value"><span id="winRate">0</span>%</div>
+                        <div class="kpi-trend trend-neutral" id="winTrend">
+                            Target: 25%
+                        </div>
+                    </div>
+                    <div class="kpi-icon">🎯</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-label">Avg Deal Size</div>
+                        <div class="kpi-value">£<span id="avgDeal">0</span></div>
+                        <div class="kpi-trend trend-up" id="avgTrend">
+                            <span>↑ £5k</span> vs last month
+                        </div>
+                    </div>
+                    <div class="kpi-icon">💼</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-grid">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>Sales Funnel</h2>
+                    <p>Lead progression through pipeline stages</p>
+                </div>
+                <div id="salesFunnel">
+                    <div class="loading">Loading funnel data...</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="chart-header">
+                    <h2>Quick Actions</h2>
+                    <p>Navigate to key areas</p>
+                </div>
+                <a href="staff.html" class="action-btn">View All Leads</a>
+                <a href="insights.html" class="action-btn">Detailed Analytics</a>
+                <a href="public.html" class="action-btn secondary">Add New Lead</a>
+                <button class="action-btn secondary" onclick="refreshData()">Refresh Data</button>
+            </div>
+        </div>
+
+        <div class="top-leads">
+            <div class="chart-header">
+                <h2>Top 5 Opportunities</h2>
+                <p>Highest value active leads</p>
+            </div>
+            <div id="topLeads">
+                <div class="loading">Loading opportunities...</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, collection, query, onSnapshot, orderBy, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpVvE4dAutHNfhEE2lfeK6sq5Wyd32Om0",
+            authDomain: "techstart-crm.firebaseapp.com",
+            projectId: "techstart-crm",
+            storageBucket: "techstart-crm.firebasestorage.app",
+            messagingSenderId: "963810827462",
+            appId: "1:963810827462:web:94cc354a3ed88fac518bc7",
+            measurementId: "G-28BN9R4CB6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let allLeads = [];
+
+        const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
+        
+        onSnapshot(q, (snapshot) => {
+            allLeads = [];
+            snapshot.forEach((doc) => {
+                allLeads.push({ id: doc.id, ...doc.data() });
+            });
+            
+            updateDashboard();
+        }, (error) => {
+            console.error('Error loading dashboard:', error);
+        });
+
+        function updateDashboard() {
+            updateKPIs();
+            updateSalesFunnel();
+            updateTopLeads();
+        }
+
+        function updateKPIs() {
+            const activeLeads = allLeads.filter(l => l.stage !== 'Lost' && l.stage !== 'Won');
+            const totalValue = activeLeads.reduce((sum, l) => sum + (l.estimatedValue || 0), 0);
+            const wonLeads = allLeads.filter(l => l.stage === 'Won').length;
+            const winRate = allLeads.length > 0 ? ((wonLeads / allLeads.length) * 100).toFixed(1) : 0;
+            const avgDeal = allLeads.length > 0 
+                ? Math.round(allLeads.reduce((sum, l) => sum + (l.estimatedValue || 0), 0) / allLeads.length)
+                : 0;
+
+            document.getElementById('totalValue').textContent = totalValue.toLocaleString();
+            document.getElementById('activeLeads').textContent = activeLeads.length;
+            document.getElementById('winRate').textContent = winRate;
+            document.getElementById('avgDeal').textContent = avgDeal.toLocaleString();
+        }
+
+        function updateSalesFunnel() {
+            const stages = [
+                { name: 'New Leads', stage: 'New', color: '#1e3c72' },
+                { name: 'Contacted', stage: 'Contacted', color: '#2a5298' },
+                { name: 'Qualified', stage: 'Qualified', color: '#3d6bb3' },
+                { name: 'Proposal Sent', stage: 'Proposal', color: '#5085ce' },
+                { name: 'Closed Won', stage: 'Won', color: '#2e7d32' }
+            ];
+
+            const maxCount = Math.max(...stages.map(s => 
+                allLeads.filter(l => l.stage === s.stage).length
+            ), 1);
+
+            const container = document.getElementById('salesFunnel');
+            container.innerHTML = stages.map(stage => {
+                const count = allLeads.filter(l => l.stage === stage.stage).length;
+                const percentage = ((count / maxCount) * 100).toFixed(1);
+                const conversionRate = allLeads.length > 0 
+                    ? ((count / allLeads.length) * 100).toFixed(1) 
+                    : 0;
+
+                return `
+                    <div class="funnel-stage">
+                        <div class="funnel-header">
+                            <span class="funnel-name">${stage.name}</span>
+                            <div class="funnel-stats">
+                                <span class="funnel-count">${count} leads</span>
+                                <span>${conversionRate}%</span>
+                            </div>
+                        </div>
+                        <div class="funnel-bar">
+                            <div class="funnel-fill" style="width: ${percentage}%; background: ${stage.color}">
+                                ${count > 0 ? count : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateTopLeads() {
+            const activeLeads = allLeads
+                .filter(l => l.stage !== 'Lost' && l.stage !== 'Won')
+                .sort((a, b) => (b.estimatedValue || 0) - (a.estimatedValue || 0))
+                .slice(0, 5);
+
+            const container = document.getElementById('topLeads');
+
+            if (activeLeads.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No active opportunities</p>';
+                return;
+            }
+
+            container.innerHTML = activeLeads.map((lead, index) => `
+                <div class="lead-item">
+                    <div class="lead-name">${index + 1}. ${lead.companyName}</div>
+                    <div class="lead-info">${lead.contactName} &bull; ${lead.stage}</div>
+                    <div class="lead-value">£${(lead.estimatedValue || 0).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        window.refreshData = () => {
+            updateDashboard();
+            alert('Dashboard refreshed successfully!');
+        };
+    </script>
+</body>
+</html>
